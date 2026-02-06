@@ -23,8 +23,11 @@ export default async function Home() {
   }
 
   const { data, error } = await supabase.from("humor_flavors").select("*");
-  const columns =
-    data && data.length > 0 ? Object.keys(data[0] as Record<string, unknown>) : [];
+  const columns = ["id", "slug", "description"];
+  const hasAllColumns =
+    data && data.length > 0
+      ? columns.every((col) => col in (data[0] as Record<string, unknown>))
+      : true;
 
   return (
     <main className="page">
@@ -34,9 +37,12 @@ export default async function Home() {
           <h1 className="title">Humor Flavors</h1>
           <p className="subtitle">
             {data ? data.length : 0} rows • Table: humor_flavors
+            {!hasAllColumns && data && data.length > 0
+              ? " (Some columns missing)"
+              : ""}
           </p>
           <div className="pillRow">
-            <div className="pill">All columns</div>
+            <div className="pill">ID · Slug · Description</div>
             <div className="pill">Live data</div>
           </div>
         </div>
@@ -65,11 +71,13 @@ export default async function Home() {
                     <tr key={(row as { id?: number | string }).id ?? index}>
                       {columns.map((col) => (
                         <td key={`${index}-${col}`}>
-                          {row[col] === null || row[col] === undefined
+                          {(row as Record<string, unknown>)[col] === null ||
+                          (row as Record<string, unknown>)[col] === undefined
                             ? ""
-                            : typeof row[col] === "object"
-                              ? JSON.stringify(row[col])
-                              : String(row[col])}
+                            : typeof (row as Record<string, unknown>)[col] ===
+                                "object"
+                              ? JSON.stringify((row as Record<string, unknown>)[col])
+                              : String((row as Record<string, unknown>)[col])}
                         </td>
                       ))}
                     </tr>
