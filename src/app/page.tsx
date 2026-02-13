@@ -12,7 +12,7 @@ export default async function Home() {
       <main className="page">
         <section className="container">
           <div className="hero">
-            <div className="eyebrow">SUPABASE -> NEXT.JS</div>
+            <div className="eyebrow">SUPABASE -&gt; NEXT.JS</div>
             <h1 className="title">Humor Flavors</h1>
             <p className="subtitle">
               Missing Supabase environment variables. Set
@@ -45,7 +45,7 @@ export default async function Home() {
         <div className="hero">
           <div className="tableHeader userHeader">
             <div>
-              <div className="eyebrow">SUPABASE -> NEXT.JS</div>
+              <div className="eyebrow">SUPABASE -&gt; NEXT.JS</div>
               <h1 className="title">Humor Flavors</h1>
               <p className="subtitle">
                 {data ? data.length : 0} rows | Table: humor_flavors
