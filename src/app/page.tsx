@@ -1,15 +1,18 @@
+import Link from "next/link";
+import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabaseServer";
 
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
   const supabase = createSupabaseServerClient();
+
   if (!supabase) {
     return (
       <main className="page">
         <section className="container">
           <div className="hero">
-            <div className="eyebrow">SUPABASE → NEXT.JS</div>
+            <div className="eyebrow">SUPABASE -> NEXT.JS</div>
             <h1 className="title">Humor Flavors</h1>
             <p className="subtitle">
               Missing Supabase environment variables. Set
@@ -22,28 +25,44 @@ export default async function Home() {
     );
   }
 
-  const { data, error } = await supabase.from("humor_flavors").select("*");
-  const columns = ["id", "slug", "description"];
-  const hasAllColumns =
-    data && data.length > 0
-      ? columns.every((col) => col in (data[0] as Record<string, unknown>))
-      : true;
+  const [
+    {
+      data: { user },
+    },
+    { data, error },
+  ] = await Promise.all([
+    supabase.auth.getUser(),
+    supabase.from("humor_flavors").select("id, slug, description").order("id"),
+  ]);
+
+  if (!user) {
+    redirect("/login");
+  }
 
   return (
     <main className="page">
       <section className="container">
         <div className="hero">
-          <div className="eyebrow">SUPABASE → NEXT.JS</div>
-          <h1 className="title">Humor Flavors</h1>
-          <p className="subtitle">
-            {data ? data.length : 0} rows • Table: humor_flavors
-            {!hasAllColumns && data && data.length > 0
-              ? " (Some columns missing)"
-              : ""}
-          </p>
+          <div className="tableHeader userHeader">
+            <div>
+              <div className="eyebrow">SUPABASE -> NEXT.JS</div>
+              <h1 className="title">Humor Flavors</h1>
+              <p className="subtitle">
+                {data ? data.length : 0} rows | Table: humor_flavors
+              </p>
+            </div>
+            <div className="userActions">
+              <p className="userInfo">
+                Signed in as <span>{user.email ?? "Google user"}</span>
+              </p>
+              <Link className="pillLink" href="/auth/signout">
+                Sign out
+              </Link>
+            </div>
+          </div>
           <div className="pillRow">
-            <div className="pill">ID · Slug · Description</div>
-            <div className="pill">Live data</div>
+            <div className="pill">ID | Slug | Description</div>
+            <div className="pill">Protected route</div>
           </div>
         </div>
 
@@ -53,33 +72,23 @@ export default async function Home() {
             <div>{data ? `Showing ${data.length}` : "Showing 0"}</div>
           </div>
           {error ? (
-            <div className="errorState">
-              Failed to load data: {error.message}
-            </div>
+            <div className="errorState">Failed to load data: {error.message}</div>
           ) : data && data.length > 0 ? (
             <div className="tableWrap">
               <table>
                 <thead>
                   <tr>
-                    {columns.map((col) => (
-                      <th key={col}>{col}</th>
-                    ))}
+                    <th>id</th>
+                    <th>slug</th>
+                    <th>description</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {data.map((row, index) => (
-                    <tr key={(row as { id?: number | string }).id ?? index}>
-                      {columns.map((col) => (
-                        <td key={`${index}-${col}`}>
-                          {(row as Record<string, unknown>)[col] === null ||
-                          (row as Record<string, unknown>)[col] === undefined
-                            ? ""
-                            : typeof (row as Record<string, unknown>)[col] ===
-                                "object"
-                              ? JSON.stringify((row as Record<string, unknown>)[col])
-                              : String((row as Record<string, unknown>)[col])}
-                        </td>
-                      ))}
+                  {data.map((row) => (
+                    <tr key={row.id}>
+                      <td>{row.id}</td>
+                      <td>{row.slug}</td>
+                      <td>{row.description}</td>
                     </tr>
                   ))}
                 </tbody>
