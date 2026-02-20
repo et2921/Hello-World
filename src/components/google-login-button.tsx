@@ -19,6 +19,10 @@ export function GoogleLoginButton() {
       return;
     }
 
+    const next = new URLSearchParams(window.location.search).get("next") ?? "/";
+    if (next.startsWith("/")) {
+      document.cookie = `auth_next=${encodeURIComponent(next)}; path=/; max-age=300; SameSite=Lax`;
+    }
     const redirectTo = `${window.location.origin}/auth/callback`;
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",

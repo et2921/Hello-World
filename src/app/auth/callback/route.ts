@@ -4,7 +4,11 @@ import { NextResponse, type NextRequest } from "next/server";
 export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get("code");
-  const next = requestUrl.searchParams.get("next") ?? "/";
+
+  const rawNext = request.cookies.get("auth_next")?.value;
+  const next = rawNext && decodeURIComponent(rawNext).startsWith("/")
+    ? decodeURIComponent(rawNext)
+    : "/";
 
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -14,6 +18,7 @@ export async function GET(request: NextRequest) {
   }
 
   const response = NextResponse.redirect(new URL(next, request.url));
+  response.cookies.set("auth_next", "", { maxAge: 0, path: "/" });
 
   const supabase = createServerClient(url, anonKey, {
     cookies: {
