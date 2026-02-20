@@ -12,30 +12,60 @@ export default async function LoginPage() {
     const {
       data: { user },
     } = await supabase.auth.getUser();
-
-    if (user) {
-      redirect("/");
-    }
+    if (user) redirect("/");
   }
 
   return (
-    <main className="page">
-      <section className="container">
-        <div className="hero loginHero">
-          <div className="eyebrow">Assignment #5</div>
-          <h1 className="title">Sign in</h1>
-          <p className="subtitle">
-            Sign in with Google to vote on memes and view the leaderboard.
-          </p>
-          <div className="loginActions">
-            <GoogleLoginButton />
-            <Link className="homeLink" href="/">
-              ← Home
-            </Link>
-          </div>
-          <div className="redirectInfo">Redirect URI is /auth/callback</div>
+    <main className="courtPage">
+      {/* ── Court lines (decorative, aria-hidden) ── */}
+      <div className="court" aria-hidden="true">
+        <div className="courtBoundary" />
+        <div className="courtMidline" />
+
+        {/* Blue paint / keys */}
+        <div className="courtKey courtKeyLeft" />
+        <div className="courtKey courtKeyRight" />
+
+        {/* Free-throw circles */}
+        <div className="courtFT courtFTLeft" />
+        <div className="courtFT courtFTRight" />
+
+        {/* Three-point arcs */}
+        <div className="courtThreeWrap courtThreeWrapLeft">
+          <div className="courtThree" />
         </div>
-      </section>
+        <div className="courtThreeWrap courtThreeWrapRight">
+          <div className="courtThree" />
+        </div>
+
+        {/* Center circle */}
+        <div className="courtCenterCircle" />
+        <div className="courtJumpDot" />
+      </div>
+
+      {/* ── Login card — sits at center court ── */}
+      <div className="courtCard">
+        <div className="knicksBrand">
+          <span className="knicksCity">NEW YORK</span>
+          <span className="knicksName">KNICKS</span>
+        </div>
+
+        <h1 className="courtCardTitle">Sign In</h1>
+        <p className="courtCardSub">
+          Sign in with Google to vote on memes
+        </p>
+
+        <div className="courtCardActions">
+          <GoogleLoginButton />
+          <Link className="courtHomeLink" href="/">
+            ← Home
+          </Link>
+        </div>
+
+        <div className="courtRedirectInfo">
+          Redirect URI → /auth/callback
+        </div>
+      </div>
     </main>
   );
 }
