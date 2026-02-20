@@ -254,6 +254,20 @@ td {
   border-color: #ff8aa5;
 }
 
+.pillActive {
+  background: rgba(122, 162, 255, 0.14);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.voteUpCount {
+  color: var(--accent);
+}
+
+.voteDownCount {
+  color: #ff8aa5;
+}
+
 .voteSuccess {
   color: var(--accent);
   font-size: 13px;

@@ -68,8 +68,10 @@ export default async function Home() {
             </div>
           </div>
           <div className="pillRow">
-            <div className="pill">ID | Slug | Description</div>
-            <div className="pill">Protected route</div>
+            <div className="pill pillActive">Captions</div>
+            <Link className="pillLink" href="/votes">
+              Vote Results
+            </Link>
           </div>
         </div>
 
