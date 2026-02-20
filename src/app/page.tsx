@@ -33,8 +33,7 @@ export default async function Home() {
       .from("captions")
       .select("id, content, like_count, images(url)")
       .not("content", "is", null)
-      .not("image_id", "is", null)
-      .limit(20),
+      .not("image_id", "is", null),
   ]);
 
   if (!user) {
@@ -57,7 +56,7 @@ export default async function Home() {
               <div className="eyebrow">Assignment #5</div>
               <h1 className="title">Meme Court 🏀</h1>
               <p className="subtitle">
-                Drag right to dunk, drag left to trash
+                {captionsWithImages.length} memes in the queue — drag to vote
               </p>
             </div>
             <div className="userActions">
