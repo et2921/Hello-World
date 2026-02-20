@@ -447,6 +447,295 @@ tr:hover td {
   color: rgba(232, 238, 252, 0.4);
 }
 
+/* ── Game page (NBA court theme) ── */
+.gamePage {
+  min-height: 100vh;
+  padding: 48px 20px 80px;
+  /* Warm orange-amber court gradient over the dark base */
+  background:
+    radial-gradient(800px 500px at 10% 0%,  rgba(251, 146, 60, 0.18), transparent 60%),
+    radial-gradient(700px 500px at 90% 10%, rgba(234, 88,  12, 0.12), transparent 55%),
+    radial-gradient(600px 400px at 50% 90%, rgba(120, 119, 198, 0.14), transparent 60%),
+    #0b0f19;
+  background-attachment: fixed;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Floating basketball decorations */
+.courtDecor {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.courtDecor::before {
+  content: "🏀";
+  position: absolute;
+  font-size: 220px;
+  opacity: 0.035;
+  top: 5%;
+  right: -3%;
+  animation: floatSpin 22s linear infinite;
+  filter: blur(1px);
+}
+
+.courtDecor::after {
+  content: "🏀";
+  position: absolute;
+  font-size: 160px;
+  opacity: 0.025;
+  bottom: 10%;
+  left: -2%;
+  animation: floatSpin 30s linear infinite reverse;
+  filter: blur(1px);
+}
+
+@keyframes floatSpin {
+  0%   { transform: rotate(0deg)   translateY(0px); }
+  50%  { transform: rotate(180deg) translateY(-20px); }
+  100% { transform: rotate(360deg) translateY(0px); }
+}
+
+/* Make container stack above the decor */
+.gamePage .container {
+  position: relative;
+  z-index: 1;
+}
+
+/* Pill active colour on game page = orange */
+.gamePage .pillActive {
+  background: rgba(251, 146, 60, 0.2);
+  border-color: rgba(251, 146, 60, 0.5);
+  color: #fb923c;
+}
+
+/* ── Game arena ── */
+.gameArena {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 16px 0 32px;
+  min-height: 580px;
+}
+
+/* Drop zones — absolute, centred vertically */
+.dropZone {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-60%);
+  width: 110px;
+  padding: 18px 10px;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  pointer-events: none;
+  transition: opacity 0.08s;
+}
+
+.dropZoneLeft {
+  left: 0;
+  background: rgba(239, 68, 68, 0.1);
+  border: 2px solid rgba(239, 68, 68, 0.28);
+}
+
+.dropZoneRight {
+  right: 0;
+  background: rgba(251, 146, 60, 0.1);
+  border: 2px solid rgba(251, 146, 60, 0.28);
+}
+
+.dropZoneIcon {
+  font-size: 38px;
+}
+
+.dropZoneLabel {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.dropZoneLeft  .dropZoneLabel { color: #f87171; }
+.dropZoneRight .dropZoneLabel { color: #fb923c; }
+
+/* ── Card stack ── */
+.cardStack {
+  position: relative;
+  width: 340px;
+  height: 470px;
+}
+
+.gameCard {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 24px;
+  overflow: hidden;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+  will-change: transform;
+}
+
+.gameCardShadow {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.07);
+  pointer-events: none;
+}
+
+.gameCardImg {
+  width: 100%;
+  height: 60%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+
+.gameCardBody {
+  padding: 16px 20px;
+}
+
+.gameCardCaption {
+  font-size: 14px;
+  line-height: 1.55;
+  color: rgba(232, 238, 252, 0.9);
+}
+
+/* Vote overlays (DUNK! / TRASH!) */
+.cardOverlay {
+  position: absolute;
+  top: 16px;
+  padding: 7px 14px;
+  border-radius: 10px;
+  font-size: 20px;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  pointer-events: none;
+  z-index: 10;
+  border: 3px solid rgba(255, 255, 255, 0.9);
+  transition: none;
+  white-space: nowrap;
+}
+
+.cardOverlayDunk {
+  right: 14px;
+  background: rgba(251, 146, 60, 0.92);
+  color: #fff;
+  transform: rotate(10deg);
+}
+
+.cardOverlayTrash {
+  left: 14px;
+  background: rgba(239, 68, 68, 0.92);
+  color: #fff;
+  transform: rotate(-10deg);
+}
+
+/* ── Hint bar ── */
+.gameHint {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 340px;
+  font-size: 12px;
+  color: rgba(232, 238, 252, 0.3);
+  letter-spacing: 0.04em;
+}
+
+.gameCounter {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  padding: 4px 14px;
+  font-size: 12px;
+  color: rgba(232, 238, 252, 0.5);
+}
+
+/* ── Action buttons ── */
+.gameButtons {
+  display: flex;
+  gap: 14px;
+}
+
+.gameBtn {
+  padding: 11px 28px;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 2px solid;
+  transition: background 0.15s, transform 0.1s;
+  letter-spacing: 0.02em;
+}
+
+.gameBtnTrash {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.35);
+  color: #f87171;
+}
+
+.gameBtnTrash:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.22);
+  transform: scale(1.04);
+}
+
+.gameBtnDunk {
+  background: rgba(251, 146, 60, 0.12);
+  border-color: rgba(251, 146, 60, 0.35);
+  color: #fb923c;
+}
+
+.gameBtnDunk:hover:not(:disabled) {
+  background: rgba(251, 146, 60, 0.22);
+  transform: scale(1.04);
+}
+
+.gameBtn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* ── Completion screen ── */
+.gameComplete {
+  text-align: center;
+  padding: 80px 20px;
+}
+
+.gameCompleteEmoji {
+  font-size: 80px;
+  margin-bottom: 20px;
+  display: block;
+  animation: bounceIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes bounceIn {
+  0%   { transform: scale(0);   opacity: 0; }
+  60%  { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(1); }
+}
+
+.gameCompleteTitle {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: #fb923c;
+}
+
+.gameCompleteSubtitle {
+  color: rgba(232, 238, 252, 0.55);
+  font-size: 15px;
+}
+
 /* ── Responsive ── */
 @media (max-width: 640px) {
   .hero {
@@ -460,5 +749,26 @@ tr:hover td {
 
   .userActions {
     align-self: flex-end;
+  }
+
+  .cardStack {
+    width: 300px;
+    height: 420px;
+  }
+
+  .gameHint {
+    width: 300px;
+  }
+
+  .dropZone {
+    width: 80px;
+  }
+
+  .dropZoneIcon {
+    font-size: 28px;
+  }
+
+  .dropZoneLabel {
+    font-size: 9px;
   }
 }
