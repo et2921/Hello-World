@@ -14,7 +14,7 @@ export default async function Home() {
         <section className="container">
           <div className="hero">
             <div className="eyebrow">SUPABASE -&gt; NEXT.JS</div>
-            <h1 className="title">Humor Flavors</h1>
+            <h1 className="title">Meme Vote</h1>
             <p className="subtitle">
               Missing Supabase environment variables. Set
               NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in
@@ -30,21 +30,24 @@ export default async function Home() {
     {
       data: { user },
     },
-    { data, error },
     { data: captions },
   ] = await Promise.all([
     supabase.auth.getUser(),
-    supabase.from("humor_flavors").select("id, slug, description").order("id"),
     supabase
       .from("captions")
-      .select("id, content, like_count")
+      .select("id, content, like_count, images(url)")
       .not("content", "is", null)
+      .not("image_id", "is", null)
       .limit(10),
   ]);
 
   if (!user) {
     redirect("/login");
   }
+
+  const captionsWithImages = (captions ?? []).filter(
+    (c) => c.images && (c.images as { url: string }).url
+  );
 
   return (
     <main className="page">
@@ -53,9 +56,9 @@ export default async function Home() {
           <div className="tableHeader userHeader">
             <div>
               <div className="eyebrow">SUPABASE -&gt; NEXT.JS</div>
-              <h1 className="title">Humor Flavors</h1>
+              <h1 className="title">Meme Vote</h1>
               <p className="subtitle">
-                {data ? data.length : 0} rows | Table: humor_flavors
+                {captionsWithImages.length} memes | Vote on your favourites
               </p>
             </div>
             <div className="userActions">
@@ -68,47 +71,22 @@ export default async function Home() {
             </div>
           </div>
           <div className="pillRow">
-            <div className="pill pillActive">Captions</div>
+            <div className="pill pillActive">Memes</div>
             <Link className="pillLink" href="/votes">
               Vote Results
             </Link>
           </div>
         </div>
 
-        <div className="tableCard">
-          <div className="tableHeader">
-            <div>Humor Flavors</div>
-            <div>{data ? `Showing ${data.length}` : "Showing 0"}</div>
-          </div>
-          {error ? (
-            <div className="errorState">Failed to load data: {error.message}</div>
-          ) : data && data.length > 0 ? (
-            <div className="tableWrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>id</th>
-                    <th>slug</th>
-                    <th>description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {data.map((row) => (
-                    <tr key={row.id}>
-                      <td>{row.id}</td>
-                      <td>{row.slug}</td>
-                      <td>{row.description}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ) : (
-            <div className="emptyState">No rows found.</div>
-          )}
-        </div>
-
-        <CaptionsList captions={captions ?? []} userId={user.id} />
+        <CaptionsList
+          captions={captionsWithImages.map((c) => ({
+            id: c.id,
+            content: c.content as string,
+            like_count: c.like_count as number,
+            imageUrl: (c.images as { url: string }).url,
+          }))}
+          userId={user.id}
+        />
       </section>
     </main>
   );

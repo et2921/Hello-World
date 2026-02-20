@@ -7,9 +7,10 @@ type Caption = {
   id: string;
   content: string;
   like_count: number;
+  imageUrl: string;
 };
 
-type VoteState = "idle" | "loading" | "voted" | "error";
+type VoteState = "idle" | "loading" | "up" | "down" | "error";
 
 export function CaptionsList({
   captions,
@@ -44,69 +45,67 @@ export function CaptionsList({
       setVoteStates((prev) => ({ ...prev, [captionId]: "error" }));
       setErrorMessages((prev) => ({ ...prev, [captionId]: error.message }));
     } else {
-      setVoteStates((prev) => ({ ...prev, [captionId]: "voted" }));
+      setVoteStates((prev) => ({
+        ...prev,
+        [captionId]: voteValue === 1 ? "up" : "down",
+      }));
     }
   }
 
+  if (captions.length === 0) {
+    return <div className="emptyState">No memes found.</div>;
+  }
+
   return (
-    <div className="tableCard">
-      <div className="tableHeader">
-        <div>Captions</div>
-        <div>{captions.length > 0 ? `Showing ${captions.length}` : "Showing 0"}</div>
-      </div>
-      {captions.length === 0 ? (
-        <div className="emptyState">No captions found.</div>
-      ) : (
-        <div className="tableWrap">
-          <table>
-            <thead>
-              <tr>
-                <th>caption</th>
-                <th>score</th>
-                <th>vote</th>
-              </tr>
-            </thead>
-            <tbody>
-              {captions.map((caption) => {
-                const state = voteStates[caption.id] ?? "idle";
-                const errMsg = errorMessages[caption.id];
-                return (
-                  <tr key={caption.id}>
-                    <td>{caption.content}</td>
-                    <td>{caption.like_count}</td>
-                    <td>
-                      {state === "voted" ? (
-                        <span className="voteSuccess">Voted!</span>
-                      ) : state === "error" ? (
-                        <span className="voteError">{errMsg || "Error"}</span>
-                      ) : (
-                        <div className="voteButtons">
-                          <button
-                            className="voteBtn voteUp"
-                            onClick={() => handleVote(caption.id, 1)}
-                            disabled={state === "loading"}
-                            aria-label="Upvote"
-                          >
-                            ▲
-                          </button>
-                          <button
-                            className="voteBtn voteDown"
-                            onClick={() => handleVote(caption.id, -1)}
-                            disabled={state === "loading"}
-                            aria-label="Downvote"
-                          >
-                            ▼
-                          </button>
-                        </div>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      )}
+    <div className="memeGrid">
+      {captions.map((caption) => {
+        const state = voteStates[caption.id] ?? "idle";
+        const errMsg = errorMessages[caption.id];
+
+        return (
+          <div key={caption.id} className="memeCard">
+            <img
+              src={caption.imageUrl}
+              alt="meme"
+              className="memeImg"
+            />
+            <div className="memeBody">
+              <p className="memeCaption">{caption.content}</p>
+              <div className="memeVoteRow">
+                {state === "up" || state === "down" ? (
+                  <span className={state === "up" ? "voteSuccess" : "voteDownFeedback"}>
+                    {state === "up" ? "▲ Upvoted!" : "▼ Downvoted!"}
+                  </span>
+                ) : state === "error" ? (
+                  <span className="voteError">{errMsg || "Error submitting vote."}</span>
+                ) : (
+                  <>
+                    <button
+                      className="voteBtn voteUp"
+                      onClick={() => handleVote(caption.id, 1)}
+                      disabled={state === "loading"}
+                      aria-label="Upvote"
+                    >
+                      ▲ Up
+                    </button>
+                    <button
+                      className="voteBtn voteDown"
+                      onClick={() => handleVote(caption.id, -1)}
+                      disabled={state === "loading"}
+                      aria-label="Downvote"
+                    >
+                      ▼ Down
+                    </button>
+                    {state === "loading" && (
+                      <span className="voteLoading">Saving…</span>
+                    )}
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }

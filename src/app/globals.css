@@ -218,6 +218,76 @@ td {
   cursor: not-allowed;
 }
 
+.memeGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.memeCard {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.memeImg {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  display: block;
+}
+
+.memeBody {
+  padding: 14px 16px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.memeCaption {
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.5;
+  flex: 1;
+  font-family: "Trebuchet MS", "Verdana", sans-serif;
+}
+
+.memeVoteRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 34px;
+}
+
+.voteLoading {
+  color: var(--muted);
+  font-size: 13px;
+  font-family: "Trebuchet MS", "Verdana", sans-serif;
+}
+
+.voteDownFeedback {
+  color: #ff8aa5;
+  font-size: 13px;
+  font-family: "Trebuchet MS", "Verdana", sans-serif;
+}
+
+.leaderboardThumb {
+  width: 72px;
+  height: 54px;
+  object-fit: cover;
+  border-radius: 6px;
+  display: block;
+}
+
+.noThumb {
+  color: var(--muted);
+}
+
 .voteButtons {
   display: flex;
   gap: 8px;

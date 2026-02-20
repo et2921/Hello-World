@@ -30,7 +30,10 @@ export default async function VotesPage() {
   ] = await Promise.all([
     supabase.auth.getUser(),
     supabase.from("caption_votes").select("caption_id, vote_value"),
-    supabase.from("captions").select("id, content").not("content", "is", null),
+    supabase
+      .from("captions")
+      .select("id, content, images(url)")
+      .not("content", "is", null),
   ]);
 
   if (!user) {
@@ -51,16 +54,20 @@ export default async function VotesPage() {
   }
 
   // Map captions by id
-  const captionMap: Record<string, string> = {};
+  const captionMap: Record<string, { content: string; imageUrl: string | null }> = {};
   for (const caption of captions ?? []) {
-    captionMap[caption.id] = caption.content;
+    captionMap[caption.id] = {
+      content: caption.content as string,
+      imageUrl: caption.images ? (caption.images as { url: string }).url : null,
+    };
   }
 
-  // Build leaderboard sorted by score
+  // Build leaderboard sorted by score descending
   const leaderboard = Object.entries(voteMap)
     .map(([id, { up, down }]) => ({
       id,
-      content: captionMap[id] ?? "(caption not available)",
+      content: captionMap[id]?.content ?? "(caption not available)",
+      imageUrl: captionMap[id]?.imageUrl ?? null,
       up,
       down,
       score: up - down,
@@ -90,7 +97,7 @@ export default async function VotesPage() {
           </div>
           <div className="pillRow">
             <Link className="pillLink" href="/">
-              Captions
+              Memes
             </Link>
             <div className="pill pillActive">Vote Results</div>
           </div>
@@ -113,6 +120,7 @@ export default async function VotesPage() {
                 <thead>
                   <tr>
                     <th>#</th>
+                    <th>meme</th>
                     <th>caption</th>
                     <th>▲ up</th>
                     <th>▼ down</th>
@@ -123,10 +131,25 @@ export default async function VotesPage() {
                   {leaderboard.map((row, i) => (
                     <tr key={row.id}>
                       <td>{i + 1}</td>
+                      <td>
+                        {row.imageUrl ? (
+                          <img
+                            src={row.imageUrl}
+                            alt="meme"
+                            className="leaderboardThumb"
+                          />
+                        ) : (
+                          <span className="noThumb">—</span>
+                        )}
+                      </td>
                       <td>{row.content}</td>
                       <td className="voteUpCount">{row.up}</td>
                       <td className="voteDownCount">{row.down}</td>
-                      <td className={row.score >= 0 ? "voteUpCount" : "voteDownCount"}>
+                      <td
+                        className={
+                          row.score >= 0 ? "voteUpCount" : "voteDownCount"
+                        }
+                      >
                         {row.score > 0 ? "+" : ""}
                         {row.score}
                       </td>
