@@ -36,7 +36,7 @@ export function LeaderboardClient({
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "caption_votes" },
-        (payload) => {
+        (payload: { new: Record<string, unknown> }) => {
           const { caption_id, vote_value } = payload.new as {
             caption_id: string;
             vote_value: number;
