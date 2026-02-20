@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabaseServer";
+import { LeaderboardClient } from "@/components/LeaderboardClient";
 
 export const dynamic = "force-dynamic";
 
@@ -53,7 +54,7 @@ export default async function VotesPage() {
     }
   }
 
-  // Map captions by id
+  // Map captions by id — passed to client for real-time new entries
   const captionMap: Record<string, { content: string; imageUrl: string | null }> = {};
   for (const caption of captions ?? []) {
     captionMap[caption.id] = {
@@ -62,8 +63,8 @@ export default async function VotesPage() {
     };
   }
 
-  // Build leaderboard sorted by score descending
-  const leaderboard = Object.entries(voteMap)
+  // Build initial leaderboard sorted by score descending
+  const initialLeaderboard = Object.entries(voteMap)
     .map(([id, { up, down }]) => ({
       id,
       content: captionMap[id]?.content ?? "(caption not available)",
@@ -83,7 +84,7 @@ export default async function VotesPage() {
               <div className="eyebrow">SUPABASE -&gt; NEXT.JS</div>
               <h1 className="title">Vote Results</h1>
               <p className="subtitle">
-                {leaderboard.length} captions voted on
+                {initialLeaderboard.length} captions voted on
               </p>
             </div>
             <div className="userActions">
@@ -103,63 +104,10 @@ export default async function VotesPage() {
           </div>
         </div>
 
-        <div className="tableCard">
-          <div className="tableHeader">
-            <div>Leaderboard</div>
-            <div>
-              {leaderboard.length > 0
-                ? `Showing ${leaderboard.length}`
-                : "Showing 0"}
-            </div>
-          </div>
-          {leaderboard.length === 0 ? (
-            <div className="emptyState">No votes yet.</div>
-          ) : (
-            <div className="tableWrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>meme</th>
-                    <th>caption</th>
-                    <th>▲ up</th>
-                    <th>▼ down</th>
-                    <th>score</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {leaderboard.map((row, i) => (
-                    <tr key={row.id}>
-                      <td>{i + 1}</td>
-                      <td>
-                        {row.imageUrl ? (
-                          <img
-                            src={row.imageUrl}
-                            alt="meme"
-                            className="leaderboardThumb"
-                          />
-                        ) : (
-                          <span className="noThumb">—</span>
-                        )}
-                      </td>
-                      <td>{row.content}</td>
-                      <td className="voteUpCount">{row.up}</td>
-                      <td className="voteDownCount">{row.down}</td>
-                      <td
-                        className={
-                          row.score >= 0 ? "voteUpCount" : "voteDownCount"
-                        }
-                      >
-                        {row.score > 0 ? "+" : ""}
-                        {row.score}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
+        <LeaderboardClient
+          initialLeaderboard={initialLeaderboard}
+          captionMap={captionMap}
+        />
       </section>
     </main>
   );
