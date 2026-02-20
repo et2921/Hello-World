@@ -218,6 +218,54 @@ td {
   cursor: not-allowed;
 }
 
+.voteButtons {
+  display: flex;
+  gap: 8px;
+}
+
+.voteBtn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--line);
+  color: var(--text);
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: "Trebuchet MS", "Verdana", sans-serif;
+  transition: background 0.15s;
+}
+
+.voteBtn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.voteBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.voteUp:hover:not(:disabled) {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.voteDown:hover:not(:disabled) {
+  color: #ff8aa5;
+  border-color: #ff8aa5;
+}
+
+.voteSuccess {
+  color: var(--accent);
+  font-size: 13px;
+  font-family: "Trebuchet MS", "Verdana", sans-serif;
+}
+
+.voteError {
+  color: #ff8aa5;
+  font-size: 12px;
+  font-family: "Trebuchet MS", "Verdana", sans-serif;
+}
+
 @media (max-width: 720px) {
   .userHeader {
     flex-direction: column;

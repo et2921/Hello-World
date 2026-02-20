@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabaseServer";
+import { CaptionsList } from "@/components/CaptionsList";
 
 export const dynamic = "force-dynamic";
 
@@ -30,9 +31,15 @@ export default async function Home() {
       data: { user },
     },
     { data, error },
+    { data: captions },
   ] = await Promise.all([
     supabase.auth.getUser(),
     supabase.from("humor_flavors").select("id, slug, description").order("id"),
+    supabase
+      .from("captions")
+      .select("id, content, like_count")
+      .not("content", "is", null)
+      .limit(10),
   ]);
 
   if (!user) {
@@ -98,6 +105,8 @@ export default async function Home() {
             <div className="emptyState">No rows found.</div>
           )}
         </div>
+
+        <CaptionsList captions={captions ?? []} userId={user.id} />
       </section>
     </main>
   );
