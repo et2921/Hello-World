@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabaseServer";
 import { LeaderboardClient } from "@/components/LeaderboardClient";
 
@@ -22,24 +21,17 @@ export default async function VotesPage() {
     );
   }
 
-  const [
-    {
-      data: { user },
-    },
-    { data: votes },
-    { data: captions },
-  ] = await Promise.all([
-    supabase.auth.getUser(),
-    supabase.from("caption_votes").select("caption_id, vote_value"),
-    supabase
-      .from("captions")
-      .select("id, content, images(url)")
-      .not("content", "is", null),
-  ]);
+  const [{ data: { user } }, { data: votes }, { data: captions }] =
+    await Promise.all([
+      supabase.auth.getUser(),
+      supabase.from("caption_votes").select("caption_id, vote_value"),
+      supabase
+        .from("captions")
+        .select("id, content, images(url)")
+        .not("content", "is", null),
+    ]);
 
-  if (!user) {
-    redirect("/login?next=/votes");
-  }
+  // No auth redirect — the leaderboard is public. Only voting requires login.
 
   // Aggregate votes per caption
   const voteMap: Record<string, { up: number; down: number }> = {};
@@ -89,12 +81,14 @@ export default async function VotesPage() {
                 {initialLeaderboard.length} captions ranked — updates live
               </p>
             </div>
-            <div className="userActions">
-              <p className="userInfo">{user!.email ?? "Google user"}</p>
-              <Link className="signOutBtn" href="/auth/signout">
-                Sign out
-              </Link>
-            </div>
+            {user && (
+              <div className="userActions">
+                <p className="userInfo">{user.email ?? "Google user"}</p>
+                <Link className="signOutBtn" href="/auth/signout">
+                  Sign out
+                </Link>
+              </div>
+            )}
           </div>
           <div className="pillRow">
             <Link className="pillLink" href="/">
