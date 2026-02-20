@@ -25,6 +25,7 @@ export async function middleware(request: NextRequest) {
 
   if (!user && !isPublicRoute) {
     const loginUrl = new URL("/login", request.url);
+    loginUrl.searchParams.set("next", pathname);
     return NextResponse.redirect(loginUrl);
   }
 

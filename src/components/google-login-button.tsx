@@ -19,7 +19,8 @@ export function GoogleLoginButton() {
       return;
     }
 
-    const redirectTo = `${window.location.origin}/auth/callback`;
+    const next = new URLSearchParams(window.location.search).get("next") ?? "/";
+    const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`;
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
