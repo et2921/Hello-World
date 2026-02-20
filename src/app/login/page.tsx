@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { GoogleLoginButton } from "@/components/google-login-button";
 import { createSupabaseServerClient } from "@/lib/supabaseServer";
@@ -21,12 +22,18 @@ export default async function LoginPage() {
     <main className="page">
       <section className="container">
         <div className="hero loginHero">
-          <div className="eyebrow">Protected App</div>
-          <h1 className="title">Sign in to view Humor Flavors</h1>
+          <div className="eyebrow">Assignment #5</div>
+          <h1 className="title">Sign in</h1>
           <p className="subtitle">
-            Use Google OAuth to access the protected table page.
+            Sign in with Google to vote on memes and view the leaderboard.
           </p>
-          <GoogleLoginButton />
+          <div className="loginActions">
+            <GoogleLoginButton />
+            <Link className="homeLink" href="/">
+              ← Home
+            </Link>
+          </div>
+          <div className="redirectInfo">Redirect URI is /auth/callback</div>
         </div>
       </section>
     </main>

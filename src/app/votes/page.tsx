@@ -13,7 +13,7 @@ export default async function VotesPage() {
       <main className="page">
         <section className="container">
           <div className="hero">
-            <div className="eyebrow">SUPABASE -&gt; NEXT.JS</div>
+            <div className="eyebrow">Assignment #5</div>
             <h1 className="title">Vote Results</h1>
             <p className="subtitle">Missing Supabase environment variables.</p>
           </div>
@@ -38,7 +38,7 @@ export default async function VotesPage() {
   ]);
 
   if (!user) {
-    redirect("/login");
+    redirect("/login?next=/votes");
   }
 
   // Aggregate votes per caption
@@ -59,7 +59,9 @@ export default async function VotesPage() {
   for (const caption of captions ?? []) {
     captionMap[caption.id] = {
       content: caption.content as string,
-      imageUrl: caption.images ? (caption.images as unknown as { url: string }).url : null,
+      imageUrl: caption.images
+        ? (caption.images as unknown as { url: string }).url
+        : null,
     };
   }
 
@@ -79,26 +81,24 @@ export default async function VotesPage() {
     <main className="page">
       <section className="container">
         <div className="hero">
-          <div className="tableHeader userHeader">
+          <div className="userHeader">
             <div>
-              <div className="eyebrow">SUPABASE -&gt; NEXT.JS</div>
+              <div className="eyebrow">Assignment #5</div>
               <h1 className="title">Vote Results</h1>
               <p className="subtitle">
-                {initialLeaderboard.length} captions voted on
+                {initialLeaderboard.length} captions ranked — updates live
               </p>
             </div>
             <div className="userActions">
-              <p className="userInfo">
-                Signed in as <span>{user.email ?? "Google user"}</span>
-              </p>
-              <Link className="pillLink" href="/auth/signout">
+              <p className="userInfo">{user!.email ?? "Google user"}</p>
+              <Link className="signOutBtn" href="/auth/signout">
                 Sign out
               </Link>
             </div>
           </div>
           <div className="pillRow">
             <Link className="pillLink" href="/">
-              Memes
+              ← Memes
             </Link>
             <div className="pill pillActive">Vote Results</div>
           </div>

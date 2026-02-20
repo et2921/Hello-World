@@ -13,13 +13,9 @@ export default async function Home() {
       <main className="page">
         <section className="container">
           <div className="hero">
-            <div className="eyebrow">SUPABASE -&gt; NEXT.JS</div>
+            <div className="eyebrow">Assignment #5</div>
             <h1 className="title">Meme Vote</h1>
-            <p className="subtitle">
-              Missing Supabase environment variables. Set
-              NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in
-              Vercel.
-            </p>
+            <p className="subtitle">Missing Supabase environment variables.</p>
           </div>
         </section>
       </main>
@@ -42,7 +38,7 @@ export default async function Home() {
   ]);
 
   if (!user) {
-    redirect("/login");
+    redirect("/login?next=/");
   }
 
   const captionsWithImages = (captions ?? []).filter(
@@ -53,19 +49,17 @@ export default async function Home() {
     <main className="page">
       <section className="container">
         <div className="hero">
-          <div className="tableHeader userHeader">
+          <div className="userHeader">
             <div>
-              <div className="eyebrow">SUPABASE -&gt; NEXT.JS</div>
+              <div className="eyebrow">Assignment #5</div>
               <h1 className="title">Meme Vote</h1>
               <p className="subtitle">
-                {captionsWithImages.length} memes | Vote on your favourites
+                {captionsWithImages.length} memes — upvote or downvote your favourites
               </p>
             </div>
             <div className="userActions">
-              <p className="userInfo">
-                Signed in as <span>{user.email ?? "Google user"}</span>
-              </p>
-              <Link className="pillLink" href="/auth/signout">
+              <p className="userInfo">{user.email ?? "Google user"}</p>
+              <Link className="signOutBtn" href="/auth/signout">
                 Sign out
               </Link>
             </div>
@@ -73,7 +67,7 @@ export default async function Home() {
           <div className="pillRow">
             <div className="pill pillActive">Memes</div>
             <Link className="pillLink" href="/votes">
-              Vote Results
+              Vote Results →
             </Link>
           </div>
         </div>

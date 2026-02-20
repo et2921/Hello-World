@@ -23,12 +23,11 @@ export function GoogleLoginButton() {
     if (next.startsWith("/")) {
       document.cookie = `auth_next=${encodeURIComponent(next)}; path=/; max-age=300; SameSite=Lax`;
     }
+
     const redirectTo = `${window.location.origin}/auth/callback`;
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: {
-        redirectTo,
-      },
+      options: { redirectTo },
     });
 
     if (error) {
@@ -38,11 +37,15 @@ export function GoogleLoginButton() {
   }
 
   return (
-    <div className="loginActionArea">
-      <button className="loginButton" onClick={handleGoogleLogin} disabled={isLoading}>
-        {isLoading ? "Redirecting..." : "Continue with Google"}
+    <>
+      <button
+        className="loginButton"
+        onClick={handleGoogleLogin}
+        disabled={isLoading}
+      >
+        {isLoading ? "Redirecting…" : "Continue with Google →"}
       </button>
-      {errorMessage ? <p className="errorState">{errorMessage}</p> : null}
-    </div>
+      {errorMessage && <p className="errorState">{errorMessage}</p>}
+    </>
   );
 }

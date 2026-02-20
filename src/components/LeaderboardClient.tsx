@@ -31,45 +31,53 @@ export function LeaderboardClient({
     const supabase = createSupabaseBrowserClient();
     if (!supabase) return;
 
+    const rebuildLeaderboard = (votes: { caption_id: string; vote_value: number }[]) => {
+      const voteMap: Record<string, { up: number; down: number }> = {};
+      for (const vote of votes) {
+        const captionId = vote.caption_id;
+        const voteValue = Number(vote.vote_value);
+
+        if (!voteMap[captionId]) {
+          voteMap[captionId] = { up: 0, down: 0 };
+        }
+
+        if (voteValue > 0) {
+          voteMap[captionId].up += voteValue;
+        } else if (voteValue < 0) {
+          voteMap[captionId].down += Math.abs(voteValue);
+        }
+      }
+
+      return Object.entries(voteMap)
+        .map(([id, { up, down }]) => ({
+          id,
+          content: captionMap[id]?.content ?? "(caption not available)",
+          imageUrl: captionMap[id]?.imageUrl ?? null,
+          up,
+          down,
+          score: up - down,
+        }))
+        .sort((a, b) => b.score - a.score);
+    };
+
+    const refreshLeaderboard = async () => {
+      const { data, error } = await supabase
+        .from("caption_votes")
+        .select("caption_id, vote_value");
+
+      if (error) return;
+
+      setLeaderboard(rebuildLeaderboard((data ?? []) as { caption_id: string; vote_value: number }[]));
+    };
+
     const channel = supabase
       .channel("caption_votes_realtime")
       .on(
         "postgres_changes",
-        { event: "INSERT", schema: "public", table: "caption_votes" },
-        (payload: { new: Record<string, unknown> }) => {
-          const { caption_id, vote_value } = payload.new as {
-            caption_id: string;
-            vote_value: number;
-          };
-
+        { event: "*", schema: "public", table: "caption_votes" },
+        () => {
           setLiveCount((n) => n + 1);
-          setLeaderboard((prev) => {
-            const existing = prev.find((r) => r.id === caption_id);
-            let updated: LeaderboardRow[];
-
-            if (existing) {
-              updated = prev.map((r) => {
-                if (r.id !== caption_id) return r;
-                const up = vote_value > 0 ? r.up + vote_value : r.up;
-                const down = vote_value < 0 ? r.down + Math.abs(vote_value) : r.down;
-                return { ...r, up, down, score: up - down };
-              });
-            } else {
-              const info = captionMap[caption_id];
-              if (info) {
-                const up = vote_value > 0 ? vote_value : 0;
-                const down = vote_value < 0 ? Math.abs(vote_value) : 0;
-                updated = [
-                  ...prev,
-                  { id: caption_id, content: info.content, imageUrl: info.imageUrl, up, down, score: up - down },
-                ];
-              } else {
-                updated = prev;
-              }
-            }
-
-            return [...updated].sort((a, b) => b.score - a.score);
-          });
+          void refreshLeaderboard();
         }
       )
       .subscribe();
