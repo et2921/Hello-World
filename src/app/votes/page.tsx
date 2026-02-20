@@ -58,7 +58,7 @@ export default async function VotesPage() {
   for (const caption of captions ?? []) {
     captionMap[caption.id] = {
       content: caption.content as string,
-      imageUrl: caption.images ? (caption.images as { url: string }).url : null,
+      imageUrl: caption.images ? (caption.images as unknown as { url: string }).url : null,
     };
   }
 

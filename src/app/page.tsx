@@ -46,7 +46,7 @@ export default async function Home() {
   }
 
   const captionsWithImages = (captions ?? []).filter(
-    (c) => c.images && (c.images as { url: string }).url
+    (c) => c.images && (c.images as unknown as { url: string }).url
   );
 
   return (
@@ -83,7 +83,7 @@ export default async function Home() {
             id: c.id,
             content: c.content as string,
             like_count: c.like_count as number,
-            imageUrl: (c.images as { url: string }).url,
+            imageUrl: (c.images as unknown as { url: string }).url,
           }))}
           userId={user.id}
         />
