@@ -24,11 +24,11 @@ export default async function Home() {
 
   const [
     {
-      data: { user },
+      data: { session },
     },
     { data: captions },
   ] = await Promise.all([
-    supabase.auth.getUser(),
+    supabase.auth.getSession(),
     supabase
       .from("captions")
       .select("id, content, like_count, images(url)")
@@ -36,9 +36,11 @@ export default async function Home() {
       .not("image_id", "is", null),
   ]);
 
-  if (!user) {
+  if (!session) {
     redirect("/login?next=/");
   }
+
+  const user = session.user;
 
   const captionsWithImages = (captions ?? []).filter(
     (c) =>

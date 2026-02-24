@@ -22,9 +22,9 @@ export default async function ScoreboardPage() {
     );
   }
 
-  const [{ data: { user } }, { data: votes }, { data: captions }] =
+  const [{ data: { session } }, { data: votes }, { data: captions }] =
     await Promise.all([
-      supabase.auth.getUser(),
+      supabase.auth.getSession(),
       supabase.from("caption_votes").select("caption_id, vote_value"),
       supabase
         .from("captions")
@@ -33,7 +33,9 @@ export default async function ScoreboardPage() {
     ]);
 
   // Require login — session persists automatically after first sign-in
-  if (!user) redirect("/login?next=/votes");
+  if (!session) redirect("/login?next=/votes");
+
+  const user = session.user;
 
   // Aggregate votes per caption
   const voteMap: Record<string, { up: number; down: number }> = {};

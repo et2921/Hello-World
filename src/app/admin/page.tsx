@@ -20,10 +20,12 @@ export default async function AdminPage() {
   }
 
   const {
-    data: { user },
-  } = await supabase.auth.getUser();
+    data: { session },
+  } = await supabase.auth.getSession();
 
-  if (!user) redirect("/login?next=/admin");
+  if (!session) redirect("/login?next=/admin");
+
+  const user = session.user;
 
   // Restrict admin to @columbia.edu emails only
   if (!user.email?.endsWith("@columbia.edu")) {
