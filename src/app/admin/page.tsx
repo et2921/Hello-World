@@ -25,6 +25,28 @@ export default async function AdminPage() {
 
   if (!user) redirect("/login?next=/admin");
 
+  // Restrict admin to @columbia.edu emails only
+  if (!user.email?.endsWith("@columbia.edu")) {
+    return (
+      <main className="page">
+        <section className="container">
+          <div className="hero">
+            <h1 className="title">Access Denied</h1>
+            <p className="subtitle">
+              Admin is only available to @columbia.edu accounts.
+              <br />
+              You are signed in as <strong>{user.email}</strong>.
+            </p>
+            <div className="pillRow">
+              <Link className="pillLink" href="/">← Meme Court</Link>
+              <Link className="pillLink" href="/auth/signout">Sign out</Link>
+            </div>
+          </div>
+        </section>
+      </main>
+    );
+  }
+
   const { data: captions } = await supabase
     .from("captions")
     .select("id, content, like_count, images(url)")
