@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabaseServer";
 import { AdminPanel } from "@/components/AdminPanel";
+import { UploadPanel } from "@/components/UploadPanel";
 
 export const dynamic = "force-dynamic";
 
@@ -53,11 +54,13 @@ export default async function AdminPage() {
               ← Meme Court
             </Link>
             <Link className="pillLink" href="/votes">
-              Leaderboard
+              Scoreboard
             </Link>
             <div className="pill pillActive">Admin</div>
           </div>
         </div>
+
+        <UploadPanel />
 
         <AdminPanel
           initialCaptions={(captions ?? []).map((c) => ({
