@@ -71,9 +71,8 @@ export default async function Home() {
           </div>
           <div className="pillRow">
             <div className="pill pillActive">Meme Court</div>
-            <Link className="pillLink" href="/votes">
-              Leaderboard →
-            </Link>
+            <Link className="pillLink" href="/votes">Scoreboard</Link>
+            <Link className="pillLink" href="/admin">Admin</Link>
           </div>
         </div>
 

@@ -1,10 +1,11 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabaseServer";
-import { LeaderboardClient } from "@/components/LeaderboardClient";
+import { ScoreboardClient } from "@/components/LeaderboardClient";
 
 export const dynamic = "force-dynamic";
 
-export default async function VotesPage() {
+export default async function ScoreboardPage() {
   const supabase = createSupabaseServerClient();
 
   if (!supabase) {
@@ -13,7 +14,7 @@ export default async function VotesPage() {
         <section className="container">
           <div className="hero">
             <div className="eyebrow">Assignment #5</div>
-            <h1 className="title">Vote Results</h1>
+            <h1 className="title">Scoreboard</h1>
             <p className="subtitle">Missing Supabase environment variables.</p>
           </div>
         </section>
@@ -31,7 +32,8 @@ export default async function VotesPage() {
         .not("content", "is", null),
     ]);
 
-  // No auth redirect — the leaderboard is public. Only voting requires login.
+  // Require login — session persists automatically after first sign-in
+  if (!user) redirect("/login?next=/votes");
 
   // Aggregate votes per caption
   const voteMap: Record<string, { up: number; down: number }> = {};
@@ -46,7 +48,7 @@ export default async function VotesPage() {
     }
   }
 
-  // Map captions by id — passed to client for real-time new entries
+  // Map captions by id
   const captionMap: Record<string, { content: string; imageUrl: string | null }> = {};
   for (const caption of captions ?? []) {
     captionMap[caption.id] = {
@@ -57,9 +59,8 @@ export default async function VotesPage() {
     };
   }
 
-  // Build initial leaderboard sorted by score descending
-  // Filter out votes for captions that no longer exist or have no content
-  const initialLeaderboard = Object.entries(voteMap)
+  // Build scoreboard sorted by points descending — filter orphaned votes
+  const initialScoreboard = Object.entries(voteMap)
     .filter(([id]) => captionMap[id] !== undefined)
     .map(([id, { up, down }]) => ({
       id,
@@ -78,30 +79,27 @@ export default async function VotesPage() {
           <div className="userHeader">
             <div>
               <div className="eyebrow">Assignment #5</div>
-              <h1 className="title">Vote Results</h1>
+              <h1 className="title">Scoreboard</h1>
               <p className="subtitle">
-                {initialLeaderboard.length} captions ranked — updates live
+                {initialScoreboard.length} memes ranked by points — updates live
               </p>
             </div>
-            {user && (
-              <div className="userActions">
-                <p className="userInfo">{user.email ?? "Google user"}</p>
-                <Link className="signOutBtn" href="/auth/signout">
-                  Sign out
-                </Link>
-              </div>
-            )}
+            <div className="userActions">
+              <p className="userInfo">{user.email ?? "Google user"}</p>
+              <Link className="signOutBtn" href="/auth/signout">
+                Sign out
+              </Link>
+            </div>
           </div>
           <div className="pillRow">
-            <Link className="pillLink" href="/">
-              ← Memes
-            </Link>
-            <div className="pill pillActive">Vote Results</div>
+            <Link className="pillLink" href="/">← Meme Court</Link>
+            <div className="pill pillActive">Scoreboard</div>
+            <Link className="pillLink" href="/admin">Admin</Link>
           </div>
         </div>
 
-        <LeaderboardClient
-          initialLeaderboard={initialLeaderboard}
+        <ScoreboardClient
+          initialLeaderboard={initialScoreboard}
           captionMap={captionMap}
         />
       </section>
