@@ -68,7 +68,7 @@ export default async function ScoreboardPage() {
       imageUrl: captionMap[id].imageUrl,
       up,
       down,
-      score: up - down,
+      score: up,
     }))
     .sort((a, b) => b.score - a.score);
 

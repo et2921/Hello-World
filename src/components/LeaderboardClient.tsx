@@ -49,7 +49,7 @@ export function ScoreboardClient({
           imageUrl: captionMap[id].imageUrl,
           up,
           down,
-          score: up - down,
+          score: up,
         }))
         .sort((a, b) => b.score - a.score);
     };
@@ -106,11 +106,8 @@ export function ScoreboardClient({
               )}
               <div className="scoreboardInfo">
                 <p className="scoreboardCaption">{row.content}</p>
-                <p className={`scoreboardPoints ${row.score >= 0 ? "pointsPos" : "pointsNeg"}`}>
-                  {row.score > 0 ? "+" : ""}{row.score} pts
-                  <span className="scoreboardBreakdown">
-                    &nbsp;({row.up} 🏀 / {row.down} 🗑️)
-                  </span>
+                <p className="scoreboardPoints pointsPos">
+                  {row.score} 🏀 pts
                 </p>
               </div>
             </div>
