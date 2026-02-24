@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { GoogleLoginButton } from "@/components/google-login-button";
 import { createSupabaseServerClient } from "@/lib/supabaseServer";
@@ -57,13 +56,6 @@ export default async function LoginPage() {
 
         <div className="courtCardActions">
           <GoogleLoginButton />
-          <Link className="courtHomeLink" href="/">
-            ← Home
-          </Link>
-        </div>
-
-        <div className="courtRedirectInfo">
-          Redirect URI → /auth/callback
         </div>
       </div>
     </main>
