@@ -5,29 +5,33 @@ export function createSupabaseMiddlewareClient(request: NextRequest) {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-  const response = NextResponse.next({
-    request: {
-      headers: request.headers,
-    },
-  });
-
   if (!url || !anonKey) {
-    return { supabase: null, response };
+    return { supabase: null, getResponse: () => NextResponse.next({ request }) };
   }
+
+  // Track the response so setAll can update it
+  let supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient(url, anonKey, {
     cookies: {
-      get(name: string) {
-        return request.cookies.get(name)?.value;
+      getAll() {
+        return request.cookies.getAll();
       },
-      set(name: string, value: string, options) {
-        response.cookies.set({ name, value, ...options });
-      },
-      remove(name: string, options) {
-        response.cookies.set({ name, value: "", ...options, maxAge: 0 });
+      setAll(cookiesToSet) {
+        // 1. Write to request so server components see the refreshed token
+        cookiesToSet.forEach(({ name, value }) =>
+          request.cookies.set(name, value)
+        );
+        // 2. Recreate response with updated request headers
+        supabaseResponse = NextResponse.next({ request });
+        // 3. Write to response so the browser stores the refreshed token
+        cookiesToSet.forEach(({ name, value, options }) =>
+          supabaseResponse.cookies.set(name, value, options)
+        );
       },
     },
   });
 
-  return { supabase, response };
+  // Return a getter so middleware.ts always gets the latest response
+  return { supabase, getResponse: () => supabaseResponse };
 }
