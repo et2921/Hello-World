@@ -13,19 +13,14 @@ export function createSupabaseServerClient() {
 
   return createServerClient(url, anonKey, {
     cookies: {
-      get(name: string) {
-        return cookieStore.get(name)?.value;
+      getAll() {
+        return cookieStore.getAll();
       },
-      set(name: string, value: string, options) {
+      setAll(cookiesToSet) {
         try {
-          cookieStore.set({ name, value, ...options });
-        } catch {
-          // Server Components cannot write cookies directly.
-        }
-      },
-      remove(name: string, options) {
-        try {
-          cookieStore.set({ name, value: "", ...options, maxAge: 0 });
+          cookiesToSet.forEach(({ name, value, options }) =>
+            cookieStore.set(name, value, options)
+          );
         } catch {
           // Server Components cannot write cookies directly.
         }
