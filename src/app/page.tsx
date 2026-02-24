@@ -41,7 +41,10 @@ export default async function Home() {
   }
 
   const captionsWithImages = (captions ?? []).filter(
-    (c) => c.images && (c.images as unknown as { url: string }).url
+    (c) =>
+      c.content &&
+      c.images &&
+      (c.images as unknown as { url: string }).url
   );
 
   return (

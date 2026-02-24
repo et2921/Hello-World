@@ -49,10 +49,11 @@ export function LeaderboardClient({
       }
 
       return Object.entries(voteMap)
+        .filter(([id]) => captionMap[id] !== undefined)
         .map(([id, { up, down }]) => ({
           id,
-          content: captionMap[id]?.content ?? "(caption not available)",
-          imageUrl: captionMap[id]?.imageUrl ?? null,
+          content: captionMap[id].content,
+          imageUrl: captionMap[id].imageUrl,
           up,
           down,
           score: up - down,

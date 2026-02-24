@@ -177,8 +177,9 @@ export function VoteGame({
           />
         ))}
 
-        {/* Active card */}
+        {/* Active card — "active-" prefix prevents key collision with shadow cards */}
         <div
+          key={`active-${current.id}`}
           ref={cardRef}
           className="gameCard"
           style={{ zIndex: 20, cursor: "grab" }}

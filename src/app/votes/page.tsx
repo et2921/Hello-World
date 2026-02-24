@@ -58,11 +58,13 @@ export default async function VotesPage() {
   }
 
   // Build initial leaderboard sorted by score descending
+  // Filter out votes for captions that no longer exist or have no content
   const initialLeaderboard = Object.entries(voteMap)
+    .filter(([id]) => captionMap[id] !== undefined)
     .map(([id, { up, down }]) => ({
       id,
-      content: captionMap[id]?.content ?? "(caption not available)",
-      imageUrl: captionMap[id]?.imageUrl ?? null,
+      content: captionMap[id].content,
+      imageUrl: captionMap[id].imageUrl,
       up,
       down,
       score: up - down,

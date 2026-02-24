@@ -1044,3 +1044,201 @@ tr:hover td {
     font-size: 9px;
   }
 }
+
+/* ── Admin page ─────────────────────────────────────────────── */
+.adminWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding-bottom: 60px;
+}
+
+.adminCard {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 28px 32px;
+}
+
+.adminCardTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #f1f5f9;
+  margin-bottom: 20px;
+}
+
+.adminForm {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.adminLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.adminInput {
+  width: 100%;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  color: #f1f5f9;
+  font-size: 15px;
+  outline: none;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.adminInput:focus {
+  border-color: rgba(168, 85, 247, 0.6);
+}
+
+.adminTextarea {
+  resize: vertical;
+  font-family: inherit;
+}
+
+.adminPreview {
+  display: none;
+  width: 100%;
+  max-height: 220px;
+  object-fit: contain;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #0b0f19;
+}
+
+.adminSubmitBtn {
+  margin-top: 4px;
+  padding: 14px 24px;
+  background: linear-gradient(135deg, #a855f7, #6366f1);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s;
+}
+
+.adminSubmitBtn:hover {
+  opacity: 0.9;
+}
+
+.adminSubmitBtn:active {
+  transform: scale(0.98);
+}
+
+.adminSubmitBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.adminMsg {
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 14px;
+  border-radius: 8px;
+}
+
+.adminMsgSuccess {
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.adminMsgError {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.adminEmpty {
+  color: #64748b;
+  font-size: 15px;
+}
+
+.adminMemeList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.adminMemeRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+}
+
+.adminThumb {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.adminThumbEmpty {
+  width: 72px;
+  height: 72px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: #64748b;
+  flex-shrink: 0;
+}
+
+.adminMemeInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.adminMemeCaption {
+  font-size: 14px;
+  color: #e2e8f0;
+  line-height: 1.4;
+  margin-bottom: 4px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.adminMemeMeta {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.adminDeleteBtn {
+  padding: 8px 14px;
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+
+.adminDeleteBtn:hover {
+  background: rgba(239, 68, 68, 0.25);
+}
+
+.adminDeleteBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
