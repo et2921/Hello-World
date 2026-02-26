@@ -627,21 +627,13 @@ tr:hover td {
   backdrop-filter: blur(12px);
 }
 
-/* Knicks brand badge */
+/* Meme Court brand badge */
 .knicksBrand {
   display: flex;
   flex-direction: column;
   align-items: center;
-  line-height: 1;
+  gap: 4px;
   margin-bottom: 4px;
-}
-
-.knicksCity {
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.55);
 }
 
 .knicksName {
@@ -650,6 +642,25 @@ tr:hover td {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: #F58426;
+}
+
+/* Bouncing basketball */
+.loginBall {
+  font-size: 38px;
+  line-height: 1;
+  display: block;
+  animation: bounceBall 0.65s infinite alternate ease-in;
+}
+
+@keyframes bounceBall {
+  0% {
+    transform: translateY(0) scaleX(1) scaleY(1);
+    animation-timing-function: ease-in;
+  }
+  100% {
+    transform: translateY(-28px) scaleX(1.06) scaleY(0.94);
+    animation-timing-function: ease-out;
+  }
 }
 
 .courtCardTitle {

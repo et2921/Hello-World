@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabaseServer";
 import { ScoreboardClient } from "@/components/LeaderboardClient";
 
@@ -32,10 +31,8 @@ export default async function ScoreboardPage() {
         .not("content", "is", null),
     ]);
 
-  // Require login — session persists automatically after first sign-in
-  if (!session) redirect("/login?next=/votes");
-
-  const user = session.user;
+  // Scoreboard is public — no login required
+  const user = session?.user ?? null;
 
   // Aggregate votes per caption
   const voteMap: Record<string, { up: number; down: number }> = {};
@@ -87,10 +84,14 @@ export default async function ScoreboardPage() {
               </p>
             </div>
             <div className="userActions">
-              <p className="userInfo">{user.email ?? "Google user"}</p>
-              <Link className="signOutBtn" href="/auth/signout">
-                Sign out
-              </Link>
+              {user ? (
+                <>
+                  <p className="userInfo">{user.email ?? "Google user"}</p>
+                  <Link className="signOutBtn" href="/auth/signout">Sign out</Link>
+                </>
+              ) : (
+                <Link className="signOutBtn" href="/login?next=/votes">Sign in</Link>
+              )}
             </div>
           </div>
           <div className="pillRow">

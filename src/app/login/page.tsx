@@ -45,8 +45,8 @@ export default async function LoginPage() {
       {/* ── Login card — sits at center court ── */}
       <div className="courtCard">
         <div className="knicksBrand">
-          <span className="knicksCity">NEW YORK</span>
-          <span className="knicksName">KNICKS</span>
+          <div className="loginBall">🏀</div>
+          <span className="knicksName">Meme Court</span>
         </div>
 
         <h1 className="courtCardTitle">Sign In</h1>
