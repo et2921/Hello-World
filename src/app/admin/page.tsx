@@ -84,7 +84,7 @@ export default async function AdminPage() {
           </div>
         </div>
 
-        <UploadPanel />
+        <UploadPanel token={session.access_token} />
 
         <AdminPanel
           initialCaptions={(captions ?? []).map((c) => ({

@@ -35,7 +35,7 @@ function extractCaptions(data: unknown): string[] {
   return [];
 }
 
-export function UploadPanel() {
+export function UploadPanel({ token }: { token: string }) {
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState("");
   const [step, setStep] = useState<Step>("idle");
@@ -56,13 +56,10 @@ export function UploadPanel() {
 
   async function handleUpload() {
     if (!file) return;
+    if (!token) { setError("You must be logged in."); setStep("error"); return; }
 
     const supabase = createSupabaseBrowserClient();
     if (!supabase) { setError("Supabase unavailable"); setStep("error"); return; }
-
-    const { data: { session } } = await supabase.auth.getSession();
-    const token = session?.access_token;
-    if (!token) { setError("You must be logged in."); setStep("error"); return; }
 
     const authHeaders = {
       "Authorization": `Bearer ${token}`,
