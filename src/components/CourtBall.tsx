@@ -4,8 +4,10 @@ import { useEffect, useRef } from "react";
 
 const SIZE = 44;        // px — ball diameter
 const GRAVITY = 0.22;   // downward acceleration per frame
-const RESTITUTION = 0.68; // energy kept on bounce (0–1)
-const FRICTION = 0.992;   // horizontal damping on floor bounce
+const RESTITUTION = 0.72;   // energy kept on bounce (0–1)
+const FRICTION = 0.995;     // horizontal damping on floor bounce
+const MIN_BOUNCE_VY = 4.0;  // minimum upward speed after floor bounce (never settles)
+const MIN_VX = 1.5;         // minimum horizontal speed (never goes flat)
 
 export function CourtBall() {
   const ballRef = useRef<HTMLDivElement>(null);
@@ -32,15 +34,15 @@ export function CourtBall() {
       const maxX = window.innerWidth - SIZE;
       const maxY = window.innerHeight - SIZE;
 
-      // Wall bounces
+      // Wall bounces — enforce minimum horizontal speed so it never goes flat
       if (x <= 0) {
         x = 0;
-        vx = Math.abs(vx) * RESTITUTION;
+        vx = Math.max(Math.abs(vx) * RESTITUTION, MIN_VX);
         squishTimer = 6;
       }
       if (x >= maxX) {
         x = maxX;
-        vx = -Math.abs(vx) * RESTITUTION;
+        vx = -Math.max(Math.abs(vx) * RESTITUTION, MIN_VX);
         squishTimer = 6;
       }
 
@@ -51,17 +53,12 @@ export function CourtBall() {
         squishTimer = 6;
       }
 
-      // Floor — main bounce + squish
+      // Floor — enforce minimum bounce so the ball never settles
       if (y >= maxY) {
         y = maxY;
         const speed = Math.abs(vy);
-        vy = -speed * RESTITUTION;
+        vy = -Math.max(speed * RESTITUTION, MIN_BOUNCE_VY);
         vx *= FRICTION;
-        // stop micro-bouncing
-        if (speed < 1.2) {
-          vy = 0;
-          y = maxY;
-        }
         squishTimer = 8;
       }
 
