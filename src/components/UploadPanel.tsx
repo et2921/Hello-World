@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { createSupabaseBrowserClient } from "@/lib/supabaseBrowser";
+import { createClient } from "@supabase/supabase-js";
 
 const API_BASE = "https://api.almostcrackd.ai";
 
@@ -58,8 +58,16 @@ export function UploadPanel({ token }: { token: string }) {
     if (!file) return;
     if (!token) { setError("You must be logged in."); setStep("error"); return; }
 
-    const supabase = createSupabaseBrowserClient();
-    if (!supabase) { setError("Supabase unavailable"); setStep("error"); return; }
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    if (!url || !key) { setError("Supabase unavailable"); setStep("error"); return; }
+
+    // Build an authenticated client using the server-provided JWT so RLS
+    // policies see the correct user — avoids the HttpOnly cookie problem
+    const supabase = createClient(url, key, {
+      global: { headers: { Authorization: `Bearer ${token}` } },
+      auth: { persistSession: false, autoRefreshToken: false },
+    });
 
     const authHeaders = {
       "Authorization": `Bearer ${token}`,
