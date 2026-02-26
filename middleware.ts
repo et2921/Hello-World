@@ -17,15 +17,19 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  // getUser() may refresh an expired access token — always call it
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // getUser() may refresh an expired access token — call it for the side effect
+  await supabase.auth.getUser();
 
   // Always get the response AFTER getUser so we have any refreshed cookies
   const supabaseResponse = getResponse();
 
-  if (!user && !isPublicRoute) {
+  // Use getSession() for the auth decision — reads from cookies, never fails
+  // due to network issues the way getUser() can
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session && !isPublicRoute) {
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("next", pathname);
     // Copy refreshed session cookies onto the redirect so they aren't lost
@@ -36,7 +40,7 @@ export async function middleware(request: NextRequest) {
     return redirectRes;
   }
 
-  if (user && pathname === "/login") {
+  if (session && pathname === "/login") {
     const homeUrl = new URL("/", request.url);
     const redirectRes = NextResponse.redirect(homeUrl);
     supabaseResponse.cookies.getAll().forEach((cookie) => {

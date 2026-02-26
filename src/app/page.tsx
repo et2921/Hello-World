@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabaseServer";
 import { VoteGame } from "@/components/VoteGame";
+import { CourtBall } from "@/components/CourtBall";
 
 export const dynamic = "force-dynamic";
 
@@ -53,6 +54,9 @@ export default async function Home() {
     <main className="gamePage">
       {/* Decorative court background */}
       <div className="courtDecor" aria-hidden="true" />
+
+      {/* Physics basketball bouncing around the court */}
+      <CourtBall />
 
       <section className="container">
         <div className="hero">

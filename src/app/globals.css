@@ -1401,6 +1401,20 @@ tr:hover td {
   cursor: not-allowed;
 }
 
+/* ── Bouncing court basketball (home page) ── */
+.courtBallBounce {
+  position: fixed;
+  top: 0;
+  left: 0;
+  font-size: 42px;
+  line-height: 1;
+  pointer-events: none;
+  z-index: 3;
+  will-change: transform;
+  filter: drop-shadow(2px 6px 8px rgba(0, 0, 0, 0.35));
+  user-select: none;
+}
+
 /* ── Floating music player ── */
 .musicBtn {
   position: fixed;
