@@ -24,6 +24,7 @@ export function CourtBall() {
     let animId: number;
 
     function tick() {
+      if (!ball) return;
       vy += GRAVITY;
       x += vx;
       y += vy;
