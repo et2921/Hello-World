@@ -1400,3 +1400,51 @@ tr:hover td {
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+/* ── Floating music player ── */
+.musicBtn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 200;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  background: rgba(30, 30, 30, 0.85);
+  backdrop-filter: blur(10px);
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+  outline: none;
+}
+
+.musicBtn:hover:not(:disabled) {
+  transform: scale(1.1);
+  background: rgba(245, 132, 38, 0.9);
+  box-shadow: 0 6px 24px rgba(245, 132, 38, 0.4);
+}
+
+.musicBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.musicBtnPlaying {
+  background: rgba(245, 132, 38, 0.85);
+  animation: musicPulse 2.5s ease-in-out infinite;
+}
+
+.musicBtnPlaying:hover:not(:disabled) {
+  background: rgba(245, 132, 38, 1);
+}
+
+@keyframes musicPulse {
+  0%, 100% { box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4); }
+  50%       { box-shadow: 0 4px 28px rgba(245, 132, 38, 0.55); }
+}

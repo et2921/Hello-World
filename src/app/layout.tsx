@@ -1,9 +1,10 @@
 import './globals.css';
 import type { Metadata } from 'next';
+import { MusicPlayer } from '@/components/MusicPlayer';
 
 export const metadata: Metadata = {
-  title: 'Hello World',
-  description: 'Simple Hello World page.'
+  title: 'Meme Court',
+  description: 'Vote on memes — Meme Court.'
 };
 
 export default function RootLayout({
@@ -13,7 +14,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        {children}
+        <MusicPlayer />
+      </body>
     </html>
   );
 }
