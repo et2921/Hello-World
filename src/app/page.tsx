@@ -14,7 +14,6 @@ export default async function Home() {
       <main className="gamePage">
         <section className="container">
           <div className="hero">
-            <div className="eyebrow">Assignment #5</div>
             <h1 className="title">Meme Court</h1>
             <p className="subtitle">Missing Supabase environment variables.</p>
           </div>
@@ -62,8 +61,7 @@ export default async function Home() {
         <div className="hero">
           <div className="userHeader">
             <div>
-              <div className="eyebrow">Assignment #5</div>
-              <h1 className="title">Meme Court 🏀</h1>
+                <h1 className="title">Meme Court 🏀</h1>
               <p className="subtitle">
                 {captionsWithImages.length} memes in the queue — drag to vote
               </p>

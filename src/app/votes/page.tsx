@@ -12,7 +12,6 @@ export default async function ScoreboardPage() {
       <main className="page">
         <section className="container">
           <div className="hero">
-            <div className="eyebrow">Assignment #5</div>
             <h1 className="title">Scoreboard</h1>
             <p className="subtitle">Missing Supabase environment variables.</p>
           </div>
@@ -77,8 +76,7 @@ export default async function ScoreboardPage() {
         <div className="hero">
           <div className="userHeader">
             <div>
-              <div className="eyebrow">Assignment #5</div>
-              <h1 className="title">Scoreboard</h1>
+                <h1 className="title">Scoreboard</h1>
               <p className="subtitle">
                 {initialScoreboard.length} memes ranked by points — updates live
               </p>
