@@ -12,6 +12,15 @@ type Caption = {
 
 const THRESHOLD = 100;
 
+function shuffle<T>(arr: T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
 export function VoteGame({
   captions,
   userId,
@@ -19,7 +28,7 @@ export function VoteGame({
   captions: Caption[];
   userId: string;
 }) {
-  const [queue, setQueue] = useState(captions);
+  const [queue, setQueue] = useState(() => shuffle(captions));
   const [isBusy, setIsBusy] = useState(false);
 
   const cardRef = useRef<HTMLDivElement>(null);
