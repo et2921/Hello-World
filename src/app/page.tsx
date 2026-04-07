@@ -51,7 +51,7 @@ export default async function Home() {
     images: { url: string } | null;
   };
 
-  const captionsWithImages = (captions as RawCaption[] ?? []).filter(
+  const captionsWithImages = (captions as unknown as RawCaption[] ?? []).filter(
     (c) => {
       if (!c.content || !c.images?.url) return false;
       if (c.columbia_only && !isColumbia) return false;
