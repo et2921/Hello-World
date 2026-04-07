@@ -988,6 +988,23 @@ tr:hover td {
   cursor: not-allowed;
 }
 
+/* ── Progress bar ── */
+.progressBar {
+  width: 340px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.progressBarFill {
+  height: 100%;
+  background: linear-gradient(90deg, #fb923c, #f59e0b);
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
 /* ── Completion screen ── */
 .gameComplete {
   text-align: center;
@@ -1019,6 +1036,25 @@ tr:hover td {
   font-size: 15px;
 }
 
+.playAgainBtn {
+  margin-top: 28px;
+  padding: 13px 36px;
+  border-radius: 999px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  border: 2px solid rgba(251, 146, 60, 0.5);
+  background: rgba(251, 146, 60, 0.14);
+  color: #fb923c;
+  letter-spacing: 0.03em;
+  transition: background 0.15s, transform 0.1s;
+}
+
+.playAgainBtn:hover {
+  background: rgba(251, 146, 60, 0.26);
+  transform: scale(1.04);
+}
+
 /* ── Responsive ── */
 @media (max-width: 640px) {
   .hero {
@@ -1040,6 +1076,10 @@ tr:hover td {
   }
 
   .gameHint {
+    width: 300px;
+  }
+
+  .progressBar {
     width: 300px;
   }
 

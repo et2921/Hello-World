@@ -17,14 +17,21 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  // Read session directly from cookies — no network call, never clears cookies
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
+  // getUser() refreshes expired tokens and writes them back via setAll —
+  // middleware is the only place that can do this correctly.
+  // Fall back to getSession() if the network call fails so a transient
+  // error never causes a false logout.
+  const { data: { user } } = await supabase.auth.getUser();
 
   const supabaseResponse = getResponse();
 
-  if (!session && !isPublicRoute) {
+  let authenticated = !!user;
+  if (!authenticated) {
+    const { data: { session: fallbackSession } } = await supabase.auth.getSession();
+    authenticated = !!fallbackSession;
+  }
+
+  if (!authenticated && !isPublicRoute) {
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("next", pathname);
     // Copy refreshed session cookies onto the redirect so they aren't lost
@@ -35,7 +42,7 @@ export async function middleware(request: NextRequest) {
     return redirectRes;
   }
 
-  if (session && pathname === "/login") {
+  if (authenticated && pathname === "/login") {
     const homeUrl = new URL("/", request.url);
     const redirectRes = NextResponse.redirect(homeUrl);
     supabaseResponse.cookies.getAll().forEach((cookie) => {

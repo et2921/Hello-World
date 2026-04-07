@@ -31,7 +31,7 @@ export default async function Home() {
     supabase.auth.getSession(),
     supabase
       .from("captions")
-      .select("id, content, like_count, images(url)")
+      .select("id, content, like_count, columbia_only, images(url)")
       .not("content", "is", null)
       .not("image_id", "is", null),
   ]);
@@ -41,12 +41,22 @@ export default async function Home() {
   }
 
   const user = session.user;
+  const isColumbia = user.email?.endsWith("@columbia.edu") ?? false;
 
-  const captionsWithImages = (captions ?? []).filter(
-    (c) =>
-      c.content &&
-      c.images &&
-      (c.images as unknown as { url: string }).url
+  type RawCaption = {
+    id: string;
+    content: string | null;
+    like_count: number | null;
+    columbia_only: boolean | null;
+    images: { url: string } | null;
+  };
+
+  const captionsWithImages = (captions as RawCaption[] ?? []).filter(
+    (c) => {
+      if (!c.content || !c.images?.url) return false;
+      if (c.columbia_only && !isColumbia) return false;
+      return true;
+    }
   );
 
   return (
@@ -85,7 +95,7 @@ export default async function Home() {
             id: c.id,
             content: c.content as string,
             like_count: c.like_count as number,
-            imageUrl: (c.images as unknown as { url: string }).url,
+            imageUrl: c.images!.url,
           }))}
           userId={user!.id}
         />

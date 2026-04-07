@@ -10,6 +10,21 @@ export function MusicPlayer() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [playing, setPlaying] = useState(false);
   const [ready, setReady] = useState(false);
+  const pendingPlay = useRef(false);
+
+  // Auto-play when the user casts their first vote
+  useEffect(() => {
+    function handleFirstVote() {
+      if (playing) return;
+      if (ready && playerRef.current) {
+        playerRef.current.playVideo();
+      } else {
+        pendingPlay.current = true;
+      }
+    }
+    window.addEventListener("meme-first-vote", handleFirstVote);
+    return () => window.removeEventListener("meme-first-vote", handleFirstVote);
+  }, [playing, ready]);
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -32,7 +47,13 @@ export function MusicPlayer() {
           enablejsapi: 1,
         },
         events: {
-          onReady: () => setReady(true),
+          onReady: () => {
+            setReady(true);
+            if (pendingPlay.current) {
+              pendingPlay.current = false;
+              playerRef.current?.playVideo();
+            }
+          },
           onStateChange: (event: { data: number }) => {
             setPlaying(event.data === 1); // 1 = YT.PlayerState.PLAYING
           },

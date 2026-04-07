@@ -21,6 +21,15 @@ function shuffle<T>(arr: T[]): T[] {
   return a;
 }
 
+function startSession(captions: Caption[]) {
+  const size = Math.min(
+    captions.length,
+    20 + Math.floor(Math.random() * 6) // 20–25 inclusive
+  );
+  const queue = shuffle(captions).slice(0, size);
+  return { queue, sessionSize: queue.length };
+}
+
 export function VoteGame({
   captions,
   userId,
@@ -28,8 +37,11 @@ export function VoteGame({
   captions: Caption[];
   userId: string;
 }) {
-  const [queue, setQueue] = useState(() => shuffle(captions));
+  const [{ queue, sessionSize }, setSession] = useState(() =>
+    startSession(captions)
+  );
   const [isBusy, setIsBusy] = useState(false);
+  const hasTriggeredAudio = useRef(false);
 
   const cardRef = useRef<HTMLDivElement>(null);
   const leftZoneRef = useRef<HTMLDivElement>(null);
@@ -37,6 +49,8 @@ export function VoteGame({
   const isDragging = useRef(false);
   const startX = useRef(0);
   const startY = useRef(0);
+
+  const voted = sessionSize - queue.length;
 
   // Imperatively update card DOM during drag — avoids React re-render lag
   const applyDrag = useCallback((dx: number, dy: number) => {
@@ -82,6 +96,12 @@ export function VoteGame({
       setIsBusy(true);
       isDragging.current = false;
 
+      // Trigger audio seamlessly on the user's first vote
+      if (!hasTriggeredAudio.current) {
+        hasTriggeredAudio.current = true;
+        window.dispatchEvent(new CustomEvent("meme-first-vote"));
+      }
+
       const captionId = queue[0].id;
       const xTarget = direction === "right" ? "140vw" : "-140vw";
       const rot = direction === "right" ? "28deg" : "-28deg";
@@ -101,7 +121,7 @@ export function VoteGame({
       }
 
       setTimeout(() => {
-        setQueue((prev) => prev.slice(1));
+        setSession((prev: { queue: Caption[]; sessionSize: number }) => ({ ...prev, queue: prev.queue.slice(1) }));
         setIsBusy(false);
         if (leftZoneRef.current) leftZoneRef.current.style.opacity = "0.25";
         if (rightZoneRef.current) rightZoneRef.current.style.opacity = "0.25";
@@ -144,11 +164,18 @@ export function VoteGame({
         <p className="gameCompleteSubtitle">
           You&apos;ve judged every meme. Check the leaderboard.
         </p>
+        <button
+          className="playAgainBtn"
+          onClick={() => setSession(startSession(captions))}
+        >
+          🔄 Play Again
+        </button>
       </div>
     );
   }
 
   const current = queue[0];
+  const progressPct = (voted / sessionSize) * 100;
 
   return (
     <div className="gameArena">
@@ -215,10 +242,15 @@ export function VoteGame({
         </div>
       </div>
 
+      {/* Progress bar */}
+      <div className="progressBar">
+        <div className="progressBarFill" style={{ width: `${progressPct}%` }} />
+      </div>
+
       {/* Hint + counter */}
       <div className="gameHint">
         <span>← trash</span>
-        <span className="gameCounter">{queue.length} left</span>
+        <span className="gameCounter">{voted}/{sessionSize}</span>
         <span>dunk →</span>
       </div>
 
