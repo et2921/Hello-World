@@ -31,7 +31,7 @@ export default async function Home() {
     supabase.auth.getSession(),
     supabase
       .from("captions")
-      .select("id, content, like_count, columbia_only, images(url)")
+      .select("id, content, like_count, images(url)")
       .not("content", "is", null)
       .not("image_id", "is", null),
   ]);
@@ -41,22 +41,16 @@ export default async function Home() {
   }
 
   const user = session.user;
-  const isColumbia = user.email?.endsWith("@columbia.edu") ?? false;
 
   type RawCaption = {
     id: string;
     content: string | null;
     like_count: number | null;
-    columbia_only: boolean | null;
     images: { url: string } | null;
   };
 
   const captionsWithImages = (captions as unknown as RawCaption[] ?? []).filter(
-    (c) => {
-      if (!c.content || !c.images?.url) return false;
-      if (c.columbia_only && !isColumbia) return false;
-      return true;
-    }
+    (c) => c.content && c.images?.url
   );
 
   return (
@@ -72,9 +66,7 @@ export default async function Home() {
           <div className="userHeader">
             <div>
                 <h1 className="title">Meme Court 🏀</h1>
-              <p className="subtitle">
-                {captionsWithImages.length} memes in the queue — drag to vote
-              </p>
+              <p className="subtitle">drag to vote</p>
             </div>
             <div className="userActions">
               <p className="userInfo">{user!.email ?? "Google user"}</p>
